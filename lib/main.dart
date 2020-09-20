@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hackathonseptember/QrGen.dart';
+import 'package:hackathonseptember/QrScan.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
 }
+
+String usernameg;
 
 class MyApp extends StatelessWidget {
   @override
@@ -138,6 +141,7 @@ class _Login extends State<Login> {
                                           style: BorderStyle.solid),
                                       borderRadius: BorderRadius.circular(8)),
                                   onPressed: () {
+                                    usernameg = username;
                                     // testReq(username, password).then((value) => {
                                     //   print(value),
                                     //       if (value)
@@ -177,7 +181,7 @@ class _Login extends State<Login> {
                     borderRadius: BorderRadius.circular(8)),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Registration()));
+                      MaterialPageRoute(builder: (context) => QrScan()));
                 },
                 child: Text('Зарегистрируйтесь',
                     style: TextStyle(fontSize: 15, color: Colors.white)),
@@ -349,7 +353,6 @@ class _Admin extends State<Admin> {
               return ListTile(
                 title: Text(numberTruthList[i]),
                 trailing: Icon(
-                  // NEW from here...
                   states[i] ? Icons.check : Icons.cancel,
                   color: states[i] ? Colors.green : Colors.red,
                 ),
@@ -390,8 +393,8 @@ class _NewApp extends State<NewApp> {
         home: Scaffold(
             resizeToAvoidBottomPadding: false,
             appBar: AppBar(
-              title:
-                  Text('Добавить вход', style: TextStyle(color: Colors.white)),
+              title: Text('Добавить запись',
+                  style: TextStyle(color: Colors.white)),
             ),
             body: Container(
               padding: EdgeInsets.all(10),
@@ -467,8 +470,12 @@ class _NewApp extends State<NewApp> {
                               style: BorderStyle.solid),
                           borderRadius: BorderRadius.circular(10)),
                       onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => QrGen('123')));
+                        addApp('Michael', 'Root').then((value) => {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => User()))
+                            });
                       },
                       child: Text('Добавить запись!',
                           style: TextStyle(
@@ -478,6 +485,14 @@ class _NewApp extends State<NewApp> {
                 ],
               ),
             )));
+  }
+
+  Future addApp(String id, String desc) async {
+    await http.get(
+        'http://167.172.188.11:8080/server-1.0-SNAPSHOT/add_application?userId=' +
+            id +
+            '&description=' +
+            desc);
   }
 }
 
@@ -494,7 +509,7 @@ class _User extends State<User> {
   initState() {
     super.initState();
 
-    getApps('abc123').then((value) => setState(() => {}));
+    getApps(usernameg).then((value) => setState(() => {}));
   }
 
   @override
@@ -514,24 +529,27 @@ class _User extends State<User> {
           ),
           body: Center(
               child: ListView.builder(
-                itemCount: numberTruthList.length,
-                itemBuilder: (context, i) {
-                  return ListTile(
-                    title: Text(numberTruthList[i]),
-                    trailing: Icon(
-                      // NEW from here...
-                      states[i] ? Icons.check : Icons.cancel,
-                      color: states[i] ? Colors.green : Colors.red,
-                    ),
-                    onTap: () {
-                      setState(() {
-                        Navigator.push(
-                            context, MaterialPageRoute(builder: (context) => QrGen('123')));
-                      });
-                    },
-                  );
+            itemCount: numberTruthList.length,
+            itemBuilder: (context, i) {
+              return ListTile(
+                title: Text(numberTruthList[i]),
+                trailing: Icon(
+                  // NEW from here...
+                  states[i] ? Icons.check : Icons.cancel,
+                  color: states[i] ? Colors.green : Colors.red,
+                ),
+                onTap: () {
+                  if (states[i])
+                    setState(() {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => QrGen('123')));
+                    });
                 },
-              ))),
+              );
+            },
+          ))),
     );
   }
 
