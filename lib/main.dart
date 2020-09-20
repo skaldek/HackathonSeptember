@@ -142,31 +142,49 @@ class _Login extends State<Login> {
                                       borderRadius: BorderRadius.circular(8)),
                                   onPressed: () {
                                     usernameg = username;
-                                    // testReq(username, password).then((value) => {
-                                    //   print(value),
-                                    //       if (value)
-                                    //         {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => User()));
-                                    //     }
-                                    // });
+                                    testReq(username, password)
+                                        .then((value) => {
+                                              if (value == 'user\n')
+                                                {
+                                                  print(123),
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              User()))
+                                                }
+                                              else if (value == 'admin\n')
+                                                {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Admin()))
+                                                }
+                                              else if (value == 'controller\n')
+                                                {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              QrScan()))
+                                                }
+                                            });
                                   },
                                   child: Text('Войти',
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: Colors.blueAccent)),
                                 ),
-                                FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  onPressed: () {},
-                                  child: Text('Забыли пароль?',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.blueAccent)),
-                                ),
+                                // FlatButton(
+                                //   shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(8)),
+                                //   onPressed: () {},
+                                //   child: Text('Забыли пароль?',
+                                //       style: TextStyle(
+                                //           fontSize: 15,
+                                //           color: Colors.blueAccent)),
+                                // ),
                               ],
                             )),
                       ])),
@@ -181,7 +199,7 @@ class _Login extends State<Login> {
                     borderRadius: BorderRadius.circular(8)),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => QrScan()));
+                      MaterialPageRoute(builder: (context) => Registration()));
                 },
                 child: Text('Зарегистрируйтесь',
                     style: TextStyle(fontSize: 15, color: Colors.white)),
@@ -192,17 +210,14 @@ class _Login extends State<Login> {
   }
 }
 
-Future<bool> testReq(String login, String pass) async {
+Future<String> testReq(String login, String pass) async {
   var response = await http.get(
-      'http://167.172.188.11:8080/server-1.0-SNAPSHOT/login?username=' +
+      'http://167.172.188.11:8081/server-1.0-SNAPSHOT/login?username=' +
           login +
           '&password=' +
           pass);
   print(response.body);
-  if (response.body == 'ok')
-    return true;
-  else
-    return false;
+  return response.body;
 }
 
 class Registration extends StatefulWidget {
@@ -211,6 +226,8 @@ class Registration extends StatefulWidget {
 }
 
 class _Registration extends State<Registration> {
+  String dropdownValue = 'Пользователь';
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -282,15 +299,41 @@ class _Registration extends State<Registration> {
                                         fontSize: 15,
                                         color: Colors.blueAccent)),
                               ),
-                              FlatButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8)),
-                                onPressed: () {},
-                                child: Text('Забыли пароль?',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.blueAccent)),
-                              ),
+                              DropdownButton<String>(
+                                value: dropdownValue,
+                                icon: Icon(Icons.arrow_downward),
+                                iconSize: 32,
+                                elevation: 16,
+                                style: TextStyle(color: Colors.blueAccent),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.blueAccent,
+                                ),
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    dropdownValue = newValue;
+                                  });
+                                },
+                                items: <String>[
+                                  'Администратор',
+                                  'Пользователь',
+                                  'Контроллер',
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              )
+                              // FlatButton(
+                              //   shape: RoundedRectangleBorder(
+                              //       borderRadius: BorderRadius.circular(8)),
+                              //   onPressed: () {},
+                              //   child: Text('Забыли пароль?',
+                              //       style: TextStyle(
+                              //           fontSize: 15,
+                              //           color: Colors.blueAccent)),
+                              // ),
                             ],
                           )),
                     ])),
@@ -322,13 +365,12 @@ class Admin extends StatefulWidget {
 
 class _Admin extends State<Admin> {
   List<String> numberTruthList = new List<String>();
-  List<bool> states = new List<bool>();
+  List<String> states = new List<String>();
 
   @override
   initState() {
     super.initState();
-
-    getApps('abc123').then((value) => setState(() => {}));
+    getApps(usernameg).then((value) => setState(() => {}));
   }
 
   @override
@@ -350,15 +392,31 @@ class _Admin extends State<Admin> {
               child: ListView.builder(
             itemCount: numberTruthList.length,
             itemBuilder: (context, i) {
+              var icon;
+              var color;
+              if (states[i] == 'waiting') {
+                icon = Icons.access_time;
+                color = Colors.grey;
+              } else if (states[i] == 'ok') {
+                icon = Icons.check;
+                color = Colors.green;
+              } else if (states[i] == 'no') {
+                icon = Icons.cancel;
+                color = Colors.red;
+              }
               return ListTile(
                 title: Text(numberTruthList[i]),
                 trailing: Icon(
-                  states[i] ? Icons.check : Icons.cancel,
-                  color: states[i] ? Colors.green : Colors.red,
+                  icon,
+                  color: color,
                 ),
                 onTap: () {
                   setState(() {
-                    states[i] = !states[i];
+                    if (states[i] == 'waiting')
+                      states[i] = 'ok';
+                    else if (states[i] == 'ok')
+                      states[i] = 'no';
+                    else if (states[i] == 'no') states[i] = 'waiting';
                   });
                 },
               );
@@ -368,15 +426,14 @@ class _Admin extends State<Admin> {
   }
 
   Future getApps(String id) async {
-    var response = await http.get(
-        'http://167.172.188.11:8080/server-1.0-SNAPSHOT/application_list?userId=' +
-            id);
+    var response = await http
+        .get('http://167.172.188.11:8081/server-1.0-SNAPSHOT/get_applications');
     print(response.body);
     List<dynamic> data = jsonDecode(response.body);
     print(data.length);
     for (int i = 0; i < data.length; i++) {
       numberTruthList.add(data[i]['description']);
-      states.add(false);
+      states.add(data[i]['state']);
     }
   }
 }
@@ -387,6 +444,12 @@ class NewApp extends StatefulWidget {
 }
 
 class _NewApp extends State<NewApp> {
+  String _desc;
+  String _pass1;
+  String _pass2;
+  String _name;
+  String _phone;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -406,7 +469,9 @@ class _NewApp extends State<NewApp> {
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Ф.И.О',
                     ),
-                    onChanged: (text) {},
+                    onChanged: (text) {
+                      _name = text;
+                    },
                   ),
                   SizedBox(height: 10),
                   Row(
@@ -421,7 +486,9 @@ class _NewApp extends State<NewApp> {
                                     BorderRadius.all(Radius.circular(10))),
                             labelText: 'Серия',
                           ),
-                          onChanged: (text) {},
+                          onChanged: (text) {
+                            _pass1 = text;
+                          },
                         ),
                       ),
                       Container(
@@ -433,7 +500,9 @@ class _NewApp extends State<NewApp> {
                                     BorderRadius.all(Radius.circular(10))),
                             labelText: 'Номер',
                           ),
-                          onChanged: (text) {},
+                          onChanged: (text) {
+                            _pass2 = text;
+                          },
                         ),
                       ),
                     ],
@@ -445,7 +514,9 @@ class _NewApp extends State<NewApp> {
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Телефон',
                     ),
-                    onChanged: (text) {},
+                    onChanged: (text) {
+                      _phone = text;
+                    },
                   ),
                   SizedBox(height: 10),
                   TextField(
@@ -457,7 +528,9 @@ class _NewApp extends State<NewApp> {
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'О Заявке',
                     ),
-                    onChanged: (text) {},
+                    onChanged: (text) {
+                      _desc = text;
+                    },
                   ),
                   SizedBox(height: 50),
                   Container(
@@ -470,12 +543,8 @@ class _NewApp extends State<NewApp> {
                               style: BorderStyle.solid),
                           borderRadius: BorderRadius.circular(10)),
                       onPressed: () {
-                        addApp('Michael', 'Root').then((value) => {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => User()))
-                            });
+                        addApp(usernameg, _desc, _pass1 + _pass2, _phone, _name)
+                            .then((value) => {Navigator.pop(context)});
                       },
                       child: Text('Добавить запись!',
                           style: TextStyle(
@@ -487,12 +556,19 @@ class _NewApp extends State<NewApp> {
             )));
   }
 
-  Future addApp(String id, String desc) async {
+  Future addApp(
+      String id, String desc, String pass, String phone, String name) async {
     await http.get(
-        'http://167.172.188.11:8080/server-1.0-SNAPSHOT/add_application?userId=' +
+        'http://167.172.188.11:8081/server-1.0-SNAPSHOT/add_application?userId=' +
             id +
             '&description=' +
-            desc);
+            desc +
+            '&passport=' +
+            pass +
+            '&phone=' +
+            phone +
+            '&name=' +
+            name);
   }
 }
 
@@ -503,7 +579,8 @@ class User extends StatefulWidget {
 
 class _User extends State<User> {
   List<String> numberTruthList = new List<String>();
-  List<bool> states = new List<bool>();
+  List<String> states = new List<String>();
+  List<String> ids = new List<String>();
 
   @override
   initState() {
@@ -531,21 +608,28 @@ class _User extends State<User> {
               child: ListView.builder(
             itemCount: numberTruthList.length,
             itemBuilder: (context, i) {
+              var icon;
+              var color;
+              if (states[i] == 'waiting') {
+                icon = Icons.access_time;
+                color = Colors.grey;
+              } else if (states[i] == 'ok') {
+                icon = Icons.check;
+                color = Colors.green;
+              } else if (states[i] == 'no') {
+                icon = Icons.cancel;
+                color = Colors.red;
+              }
               return ListTile(
                 title: Text(numberTruthList[i]),
                 trailing: Icon(
-                  // NEW from here...
-                  states[i] ? Icons.check : Icons.cancel,
-                  color: states[i] ? Colors.green : Colors.red,
+                  icon,
+                  color: color,
                 ),
                 onTap: () {
-                  if (states[i])
-                    setState(() {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => QrGen('123')));
-                    });
+                  if (states[i] == 'ok')
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => QrGen(ids[i])));
                 },
               );
             },
@@ -555,14 +639,31 @@ class _User extends State<User> {
 
   Future getApps(String id) async {
     var response = await http.get(
-        'http://167.172.188.11:8080/server-1.0-SNAPSHOT/application_list?userId=' +
+        'http://167.172.188.11:8081/server-1.0-SNAPSHOT/application_list?userId=' +
             id);
     print(response.body);
     List<dynamic> data = jsonDecode(response.body);
     print(data.length);
     for (int i = 0; i < data.length; i++) {
       numberTruthList.add(data[i]['description']);
-      states.add(false);
+      states.add(data[i]['state']);
+      ids.add(data[i]['id'].toString());
     }
+  }
+}
+
+class AppCheck extends StatefulWidget {
+  @override
+  _AppCheck createState() => _AppCheck();
+}
+
+class _AppCheck extends State<AppCheck> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Проверка заявки', style: TextStyle(color: Colors.white)),
+        ),
+        body: Center());
   }
 }
