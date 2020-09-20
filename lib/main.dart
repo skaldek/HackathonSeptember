@@ -323,9 +323,7 @@ class _Admin extends State<Admin> {
   initState() {
     super.initState();
 
-    getApps('abc123').then((value) =>
-    setState(() => {})
-    );
+    getApps('abc123').then((value) => setState(() => {}));
   }
 
   @override
@@ -335,11 +333,13 @@ class _Admin extends State<Admin> {
           resizeToAvoidBottomPadding: false,
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => NewApp()));
+            },
           ),
           appBar: AppBar(
-            title: Text('Гжегож Бженчишчикевич',
-                style: TextStyle(color: Colors.white)),
+            title: Text('Admin', style: TextStyle(color: Colors.white)),
           ),
           body: Center(
               child: ListView.builder(
@@ -385,7 +385,99 @@ class NewApp extends StatefulWidget {
 class _NewApp extends State<NewApp> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return MaterialApp(
+        home: Scaffold(
+            resizeToAvoidBottomPadding: false,
+            appBar: AppBar(
+              title: Text('Добавить вход',
+                  style: TextStyle(color: Colors.white)),
+            ),
+            body: Container(
+              padding: EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget> [
+                    TextField(
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                        labelText: 'Ф.И.О',
+                      ),
+                      onChanged: (text) {},
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget> [
+                        Container(
+                          width: 150,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: UnderlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                              labelText: 'Серия',
+                            ),
+                            onChanged: (text) {},
+                          ),
+                        ),
+                        Container(
+                          width: 150,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: UnderlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                              labelText: 'Номер',
+                            ),
+                            onChanged: (text) {},
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                        labelText: 'Телефон',
+                      ),
+                      onChanged: (text) {},
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 2,
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                        labelText: 'О Заявке',
+                      ),
+                      onChanged: (text) {},
+                    ),
+                    SizedBox(height: 50),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      child: FlatButton(
+                        shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: Colors.blueAccent,
+                                width: 1,
+                                style: BorderStyle.solid),
+                            borderRadius: BorderRadius.circular(10)),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Admin()));
+                        },
+                        child: Text('Добавить запись!',
+                            style: TextStyle(fontSize: 18, color: Colors.blueAccent)),
+                      ),
+                    ),
+                  ],
+                ),
+            )));
   }
 }
