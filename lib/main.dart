@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -34,33 +36,35 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
         resizeToAvoidBottomPadding: false,
         body: new Stack(
-      children: <Widget>[
-        new Container(
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              image: new AssetImage("assets/images/home_page.png"),
-              fit: BoxFit.fill,
+          children: <Widget>[
+            new Container(
+              decoration: new BoxDecoration(
+                image: new DecorationImage(
+                  image: new AssetImage("assets/images/home_page.png"),
+                  fit: BoxFit.fill,
+                ),
+              ),
             ),
-          ),
-        ),
-        new Container(
-          alignment: Alignment.bottomRight,
-          padding: EdgeInsets.all(30),
-          child: FlatButton(
-            shape: RoundedRectangleBorder(
-                side: BorderSide(
-                    color: Colors.white, width: 1, style: BorderStyle.solid),
-                borderRadius: BorderRadius.circular(10)),
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Login()));
-            },
-            child: Text('Давайте начнём!',
-                style: TextStyle(fontSize: 15, color: Colors.white)),
-          ),
-        )
-      ],
-    ));
+            new Container(
+              alignment: Alignment.bottomRight,
+              padding: EdgeInsets.all(30),
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                        style: BorderStyle.solid),
+                    borderRadius: BorderRadius.circular(10)),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Login()));
+                },
+                child: Text('Давайте начнём!',
+                    style: TextStyle(fontSize: 15, color: Colors.white)),
+              ),
+            )
+          ],
+        ));
   }
 }
 
@@ -78,106 +82,108 @@ class _Login extends State<Login> {
     return new Scaffold(
         resizeToAvoidBottomPadding: false,
         body: new Stack(
-      children: <Widget>[
-        new Container(
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              image: new AssetImage("assets/images/login.png"),
-              fit: BoxFit.fill,
+          children: <Widget>[
+            new Container(
+              decoration: new BoxDecoration(
+                image: new DecorationImage(
+                  image: new AssetImage("assets/images/login.png"),
+                  fit: BoxFit.fill,
+                ),
+              ),
             ),
-          ),
-        ),
-        Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  padding: EdgeInsets.all(10),
-                  width: 300,
-                  child: Column(children: <Widget>[
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        labelText: 'Имя пользователя',
-                      ),
-                      onChanged: (text) {
-                        username = text;
-                      },
-                    ),
-                    SizedBox(height: 10),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        labelText: 'Пароль',
-                      ),
-                      onChanged: (text) {
-                        password = text;
-                      },
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            FlatButton(
-                              shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      color: Colors.blueAccent,
-                                      width: 1,
-                                      style: BorderStyle.solid),
-                                  borderRadius: BorderRadius.circular(8)),
-                              onPressed: () {
-                                // testReq(username, password).then((value) => {
-                                //   print(value),
-                                //       if (value)
-                                //         {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Admin()));
-                                //     }
-                                // });
-                              },
-                              child: Text('Войти',
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.blueAccent)),
-                            ),
-                            FlatButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              onPressed: () {},
-                              child: Text('Забыли пароль?',
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.blueAccent)),
-                            ),
-                          ],
-                        )),
-                  ])),
-            ],
-          ),
-        ),
-        Container(
-          alignment: Alignment.bottomCenter,
-          padding: EdgeInsets.only(bottom: 30),
-          child: FlatButton(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Registration()));
-            },
-            child: Text('Зарегистрируйтесь',
-                style: TextStyle(fontSize: 15, color: Colors.white)),
-          ),
-        ),
-      ],
-    ));
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      padding: EdgeInsets.all(10),
+                      width: 300,
+                      child: Column(children: <Widget>[
+                        TextField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Имя пользователя',
+                          ),
+                          onChanged: (text) {
+                            username = text;
+                          },
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Пароль',
+                          ),
+                          onChanged: (text) {
+                            password = text;
+                          },
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                FlatButton(
+                                  shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: Colors.blueAccent,
+                                          width: 1,
+                                          style: BorderStyle.solid),
+                                      borderRadius: BorderRadius.circular(8)),
+                                  onPressed: () {
+                                    // testReq(username, password).then((value) => {
+                                    //   print(value),
+                                    //       if (value)
+                                    //         {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Admin()));
+                                    //     }
+                                    // });
+                                  },
+                                  child: Text('Войти',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.blueAccent)),
+                                ),
+                                FlatButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                  onPressed: () {},
+                                  child: Text('Забыли пароль?',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.blueAccent)),
+                                ),
+                              ],
+                            )),
+                      ])),
+                ],
+              ),
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.only(bottom: 30),
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Registration()));
+                },
+                child: Text('Зарегистрируйтесь',
+                    style: TextStyle(fontSize: 15, color: Colors.white)),
+              ),
+            ),
+          ],
+        ));
   }
 }
 
@@ -205,96 +211,102 @@ class _Registration extends State<Registration> {
     return new Scaffold(
         resizeToAvoidBottomPadding: false,
         body: new Stack(children: <Widget>[
-      new Container(
-        decoration: new BoxDecoration(
-          image: new DecorationImage(
-            image: new AssetImage("assets/images/register.png"),
-            fit: BoxFit.fill,
+          new Container(
+            decoration: new BoxDecoration(
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/register.png"),
+                fit: BoxFit.fill,
+              ),
+            ),
           ),
-        ),
-      ),
-      Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-                padding: EdgeInsets.only(left: 10, top: 50),
-                width: 300,
-                child: Column(children: <Widget>[
-                  TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Имя пользователя',
-                    ),
-                    onChanged: (text) {},
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Пароль',
-                    ),
-                    onChanged: (text) {},
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Пароль',
-                    ),
-                    onChanged: (text) {},
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          FlatButton(
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Colors.blueAccent,
-                                    width: 1,
-                                    style: BorderStyle.solid),
-                                borderRadius: BorderRadius.circular(8)),
-                            onPressed: () {},
-                            child: Text('Регистрация',
-                                style: TextStyle(
-                                    fontSize: 15, color: Colors.blueAccent)),
-                          ),
-                          FlatButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            onPressed: () {},
-                            child: Text('Забыли пароль?',
-                                style: TextStyle(
-                                    fontSize: 15, color: Colors.blueAccent)),
-                          ),
-                        ],
-                      )),
-                ])),
-          ],
-        ),
-      ),
-      Container(
-        alignment: Alignment.bottomCenter,
-        padding: EdgeInsets.only(bottom: 30),
-        child: FlatButton(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Login()));
-          },
-          child: Text('Войти',
-              style: TextStyle(fontSize: 15, color: Colors.white)),
-        ),
-      ),
-    ]));
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                    padding: EdgeInsets.only(left: 10, top: 50),
+                    width: 300,
+                    child: Column(children: <Widget>[
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          labelText: 'Имя пользователя',
+                        ),
+                        onChanged: (text) {},
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          labelText: 'Пароль',
+                        ),
+                        onChanged: (text) {},
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          labelText: 'Пароль',
+                        ),
+                        onChanged: (text) {},
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              FlatButton(
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: Colors.blueAccent,
+                                        width: 1,
+                                        style: BorderStyle.solid),
+                                    borderRadius: BorderRadius.circular(8)),
+                                onPressed: () {},
+                                child: Text('Регистрация',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.blueAccent)),
+                              ),
+                              FlatButton(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                onPressed: () {},
+                                child: Text('Забыли пароль?',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.blueAccent)),
+                              ),
+                            ],
+                          )),
+                    ])),
+              ],
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            padding: EdgeInsets.only(bottom: 30),
+            child: FlatButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Login()));
+              },
+              child: Text('Войти',
+                  style: TextStyle(fontSize: 15, color: Colors.white)),
+            ),
+          ),
+        ]));
   }
 }
 
@@ -304,39 +316,39 @@ class Admin extends StatefulWidget {
 }
 
 class _Admin extends State<Admin> {
-  List<String> numberTruthList = [
-    'Заявление афа',
-    'Заявление ыаып',
-    'Заявление ваыпф',
-    'Заявление ывпцфы',
-    'Заявление ыпыыуп',
-    'Заявление ываып'
-  ];
-  List<bool> states = [
-    true,
-    false,
-    false,
-    false,
-    true,
-    true
-  ];
+  List<String> numberTruthList = new List<String>();
+  List<bool> states = new List<bool>();
+
+  @override
+  initState() {
+    super.initState();
+
+    getApps('abc123').then((value) =>
+    setState(() => {})
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
           resizeToAvoidBottomPadding: false,
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {},
+          ),
           appBar: AppBar(
             title: Text('Гжегож Бженчишчикевич',
                 style: TextStyle(color: Colors.white)),
           ),
           body: Center(
               child: ListView.builder(
-            itemCount: 6,
+            itemCount: numberTruthList.length,
             itemBuilder: (context, i) {
               return ListTile(
                 title: Text(numberTruthList[i]),
-                trailing: Icon(   // NEW from here...
+                trailing: Icon(
+                  // NEW from here...
                   states[i] ? Icons.check : Icons.cancel,
                   color: states[i] ? Colors.green : Colors.red,
                 ),
@@ -349,6 +361,19 @@ class _Admin extends State<Admin> {
             },
           ))),
     );
+  }
+
+  Future getApps(String id) async {
+    var response = await http.get(
+        'https://hackathon-september.herokuapp.com/application_list?userId=' +
+            id);
+    print(response.body);
+    List<dynamic> data = jsonDecode(response.body);
+    print(data.length);
+    for (int i = 0; i < data.length; i++) {
+      numberTruthList.add(data[i]['description']);
+      states.add(false);
+    }
   }
 }
 
@@ -363,5 +388,4 @@ class _NewApp extends State<NewApp> {
     // TODO: implement build
     throw UnimplementedError();
   }
-
 }
