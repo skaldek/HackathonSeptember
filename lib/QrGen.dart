@@ -26,12 +26,18 @@ class _QrGen extends State<QrGen> {
 
   _QrGen(String id){
     _id = id;
-    getApps(id);
+  }
+
+  @override
+  initState() {
+    super.initState();
+
+    getApps(_id).then((value) => setState(() => {}));
   }
 
   GlobalKey globalKey = new GlobalKey();
   String _id;
-  String _dataString = 'jh';
+  String _dataString = '';
   String _desc;
   String _name;
   String _phone;
@@ -85,6 +91,7 @@ class _QrGen extends State<QrGen> {
     _name = data[0]['name'];
     _passport = data[0]['passport'];
     _phone = data[0]['phone'];
+    _dataString = _phone = data[0]['token'];
   }
 
   _contentWidget() {

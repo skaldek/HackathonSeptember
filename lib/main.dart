@@ -378,13 +378,6 @@ class _Admin extends State<Admin> {
     return MaterialApp(
       home: Scaffold(
           resizeToAvoidBottomPadding: false,
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => NewApp()));
-            },
-          ),
           appBar: AppBar(
             title: Text('Admin', style: TextStyle(color: Colors.white)),
           ),

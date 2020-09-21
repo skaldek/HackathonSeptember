@@ -20,20 +20,17 @@ class _QrScan extends State<QrScan> {
         'http://167.172.188.11:8081/server-1.0-SNAPSHOT/user_get?token=' +
             cameraScanResult);
     print(response.body);
-    List<dynamic> data1 = jsonDecode(response.body);
-    print(data1);
-    response = await http.get(
-        'http://167.172.188.11:8081/server-1.0-SNAPSHOT/get_application?id=' +
-            data1[0]['id']);
-    data = await jsonDecode(response.body);
-    print(data);
+    data = await jsonDecode('[' + response.body + ']');
+    setState(() {
+      scanResult = data[0]['user_id'];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Охранник'),
+        title: Text('Контроллер'),
       ),
       body: Center(
         child: Column(
@@ -41,7 +38,22 @@ class _QrScan extends State<QrScan> {
           children: <Widget>[
             scanResult == ''
                 ? Text('Информация будет здесь.')
-                : Text(scanResult),
+                : Container(
+              alignment: Alignment.center,
+                    width: 300,
+                    child: Text(
+                      "ФИО: " +
+                          data[0]['name'] +
+                          "\nТелефон: " +
+                          data[0]['phone'] +
+                          "\nПаспорт: " +
+                          data[0]['passport'] +
+                          "\nОписание: " +
+                          data[0]['description'],
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 5,
+                    ),
+                  ),
             SizedBox(height: 20),
             FlatButton(
               shape: RoundedRectangleBorder(
@@ -50,7 +62,9 @@ class _QrScan extends State<QrScan> {
                       width: 1,
                       style: BorderStyle.solid),
                   borderRadius: BorderRadius.circular(8)),
-              onPressed: () {},
+              onPressed: () {
+                scanQRCode();
+              },
               child: Text('Начать процесс!',
                   style: TextStyle(fontSize: 15, color: Colors.blueAccent)),
             ),
